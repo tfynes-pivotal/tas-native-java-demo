@@ -25,3 +25,8 @@ cf start   tas-native-java-source-demo
 ```
 
 ![image](https://github.com/tfynes-pivotal/tas-native-java-demo/assets/6810491/87bba600-4da3-4fcd-bce2-b71114522413)
+
+
+### How to Enable V3 java Cloud Native Buildpack in TAS6.x
+Simply enable the tanzu-jammy stack and the v3 java buildpack will become available.
+![image](https://github.com/tfynes-pivotal/tas-native-java-demo/assets/6810491/c749bfee-f9f3-4ae2-a33c-8851999793ec)
