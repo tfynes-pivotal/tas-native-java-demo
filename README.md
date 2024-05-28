@@ -1,41 +1,26 @@
-# Java Native Image Sample Application
+# TAS Java Native Image Demo
 
-## Building
+## Deployment Options
 
-### With `pack`
+### Cf push "jar" archive, JIT compiled execution (normal "cf push")
+mvn package
+cf push tas-jit-java-demo
 
-#### Spring Boot 3.0.x based app
-
-```bash
-pack build applications/native-image \
-  --builder paketobuildpacks/builder-jammy-tiny \
-  --env BP_NATIVE_IMAGE=true \
-  --env BP_MAVEN_BUILD_ARGUMENTS="-Dmaven.test.skip=true --no-transfer-progress package -Pnative" \
-  --env BP_JVM_VERSION=17
+### Cf push "jar" archive, natively compiled on platform using v3 buildpack
+```
+mvn clean package -Pnative
+cf push    tas-native-java-jar-demo -p target/demo-0.0.1-SNAPSHOT.jar -b java_native_image_cnb_beta -s tanzu-jammy-full-stack -m 4G --no-start
+cf set-env tas-native-java-jar-demo BP_MAVEN_ACTIVE_PROFILES native
+cf set-env tas-native-java-jar-demo BP_JVM_VERSION 17
+cf start   tas-native-java-jar-demo
 ```
 
-#### Spring Boot 3.1.x and later based app
-
-```bash
-pack build applications/native-image \
-  --builder paketobuildpacks/builder-jammy-tiny \
-  --env BP_MAVEN_ACTIVE_PROFILES=native \
+#### Cf push source directory, natively compiled on platform using v3 buildpack
+```
+mvn clean
+cf push    tas-native-java-source-demo -b java_native_image_cnb_beta -s tanzu-jammy-full-stack -m 4G --no-start
+cf set-env tas-native-java-source-demo BP_MAVEN_ACTIVE_PROFILES native
+cf set-env tas-native-java-source-demo BP_JVM_VERSION 17
+cf start   tas-native-java-source-demo
 ```
 
-### With the Spring Boot Maven Plugin
-
-```bash
-./mvnw -Dmaven.test.skip=true spring-boot:build-image -Pnative
-```
-
-## Running
-
-```bash
-docker run --rm --tty --publish 8080:8080 applications/native-image
-```
-
-## Viewing
-
-```bash
-curl -s http://localhost:8080/actuator/health | jq .
-```
